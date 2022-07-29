@@ -1,12 +1,13 @@
 use super::*;
 
+use smallvec::SmallVec;
 use std::borrow::Borrow;
 
 #[derive(Clone, Debug)]
 pub(crate) struct BasicBin {
     length: usize,
     blade_width: usize,
-    cut_pieces: Vec<UsedCutPiece>,
+    cut_pieces: SmallVec<[UsedCutPiece; 4]>,
     price: usize,
 }
 
@@ -118,7 +119,8 @@ impl From<BasicBin> for ResultStockPiece {
     fn from(bin: BasicBin) -> Self {
         Self {
             length: bin.length,
-            cut_pieces: bin.cut_pieces.into_iter().map(Into::into).collect(),
+            cut_pieces: bin.cut_pieces.iter().map(Into::into).collect(),
+            price: bin.price,
         }
     }
 }

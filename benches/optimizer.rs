@@ -1,3 +1,5 @@
+use std::time::Duration;
+
 use criterion::*;
 use cut_optimizer_1d::*;
 use rand::prelude::*;
@@ -31,6 +33,7 @@ fn build_optimizer() -> Optimizer {
 
     for i in 0..num_cut_pieces {
         optimizer.add_cut_piece(CutPiece {
+            quantity: 1,
             external_id: Some(i),
             length: rng.gen_range(1..=120),
         });
@@ -50,5 +53,10 @@ pub fn benchmark_optimize(c: &mut Criterion) {
     });
 }
 
-criterion_group!(benches, benchmark_optimize);
+criterion_group! {
+    name = benches;
+    config = Criterion::default().sample_size(100).measurement_time(Duration::from_secs(20));
+    targets = benchmark_optimize
+}
+
 criterion_main!(benches);
